@@ -136,13 +136,13 @@ https://localhost:5001
 
 ## ✅ Boas Práticas Aplicadas
 
-- 🔸 Separação clara por responsabilidades  
-- 🔸 Uso de ViewModels nas Views (nunca as entidades)  
-- 🔸 Acesso a dados via Repositórios com ADO.NET  
-- 🔸 Lógica de negócio encapsulada em Services  
-- 🔸 Injeção de dependência via Program.cs  
-- 🔸 Alertas visuais com SweetAlert2 para melhor experiência  
-- 🔸 Controle de acesso via Claims por perfil  
+  🔸 Separação clara por responsabilidades  
+  🔸 Uso de ViewModels nas Views (nunca as entidades)  
+  🔸 Acesso a dados via Repositórios com ADO.NET  
+  🔸 Lógica de negócio encapsulada em Services  
+  🔸 Injeção de dependência via Program.cs  
+  🔸 Alertas visuais com SweetAlert2 para melhor experiência  
+  🔸 Controle de acesso via Claims por perfil  
 
 ---
 
@@ -160,5 +160,8 @@ https://localhost:5001
 
 **Daniel Coutinho Neto**  
 Desenvolvedor .Net | C# | .Net Core | .Net Framework | SQL Server | Bootstrap  
-📧 daniel@exemplo.com  
-🔗 [linkedin.com/in/daniel-coutinho-neto](https://linkedin.com/in/daniel-coutinho-neto)
+📧 [danielcoutinhoneto@outlook.com](mailto:danielcoutinhoneto@outlook.com)  
+🔗 [LinkedIn](https://linkedin.com/in/daniel-coutinho-neto)  
+🌐 [danielcoutinho.dev.br](https://danielcoutinho.dev.br)
+
+
