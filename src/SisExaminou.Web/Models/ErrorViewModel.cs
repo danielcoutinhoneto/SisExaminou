@@ -1,4 +1,4 @@
-namespace SisExaminou.Models
+namespace SisExaminou.Web.Models
 {
     public class ErrorViewModel
     {

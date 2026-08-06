@@ -1,8 +1,8 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using SisExaminou.Models;
+using SisExaminou.Web.Models;
 
-namespace SisExaminou.Controllers
+namespace SisExaminou.Web.Controllers
 {
     public class HomeController : Controller
     {

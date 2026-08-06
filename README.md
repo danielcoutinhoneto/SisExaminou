@@ -1,165 +1,203 @@
-# 🧪 SisExaminou 
+# 🧪 SisExaminou
 
-**Sistema de Orientações de Coleta de Exames**
+Sistema web para consulta de exames e orientações de coleta, com foco em acesso rápido, interface simples e administração segura do conteúdo.
 
-Com um foco em **acesso rápido**, **interface simples** e **controle de permissões por perfil**, o sistema visa padronizar e facilitar o acesso às informações essenciais para a preparação e coleta correta de exames.
+> **Estado atual:** a Sprint 1 — Estrutura e Escopo está concluída. A solução possui a estrutura inicial em Clean Architecture, compila em Release e contém o projeto de testes. Os fluxos funcionais do MVP serão implementados nas próximas sprints.
 
----
+## Estado da implementação
 
-## 🛠️ Tecnologias Utilizadas
+### Implementado
 
-- ASP.NET Core MVC 8  
-- ADO.NET puro (sem Entity Framework)  
-- SQL Server 2022  
-- HTML5, CSS3 e Razor Views  
-- Bootstrap 5.3  
-- SweetAlert2 para alertas e feedbacks visuais  
-- Autenticação com Cookies + Claims  
-- Organização inspirada em Clean Architecture (em projeto único)  
-- Injeção de dependência nativa do ASP.NET Core  
-- Camadas lógicas separadas por pasta (Domain, Application, Infrastructure, Presentation)  
+- Solução direcionada ao .NET 10.
+- Aplicação ASP.NET Core MVC com Razor Views.
+- Projetos separados em Domain, Application, Infrastructure e Web.
+- Projeto de testes com xUnit.
+- Referências entre projetos respeitando a direção das dependências.
+- Nullable reference types habilitado.
+- Bootstrap e jQuery fornecidos pelo template MVC.
+- Script SQL inicial mantido na Infrastructure como ponto de partida.
+- Build Release e execução do projeto de testes validados.
 
----
+### Planejado para o MVP
 
-## 🎯 Funcionalidades
+- Consulta pública de exames por nome ou tipo.
+- Visualização de detalhes e orientações de coleta.
+- Persistência com ADO.NET puro e SQL Server/Azure SQL.
+- Login e logout com autenticação por cookies.
+- Autorização com Claims, perfis e permissões.
+- Administração de categorias, exames e orientações.
+- Administração de usuários, perfis e permissões.
+- Inativação de registros sem exclusão física.
+- Tratamento seguro de erros e logging técnico.
+- Health check da aplicação e do banco de dados.
+- Testes unitários e de integração dos fluxos críticos.
+- Integração e entrega contínuas com GitHub Actions.
+- Publicação em Azure App Service e Azure SQL.
 
-- 🔍 Pesquisa rápida por nome ou tipo de exame com acesso livre  
-- 📋 Visualização de orientações específicas e detalhadas  
-- 🔐 Login seguro com controle de acesso por **perfis (roles)**  
-- ⚙️ Painel administrativo para:  
-  - Cadastro de exames  
-  - Gerenciamento de categorias  
-  - Definição de orientações  
-  - Controle de usuários e permissões  
-- 📁 Organização de menus baseada em permissões  
-- 🧩 Estrutura clara, testável e de fácil manutenção  
+## Objetivo do MVP
 
----
+O MVP deverá permitir:
 
-## 👥 Perfis de Acesso
+- Consulta pública de exames e orientações.
+- Manutenção protegida de categorias, exames e orientações.
+- Administração de usuários, perfis e permissões.
+- Build, testes, geração de artefato e deploy automatizados.
 
-| Perfil           | Permissões principais                             |
-|------------------|---------------------------------------------------|
-| **Administrador**| Acesso completo ao sistema                        |
-| **TI**           | Administração técnica, manutenção de dados        |
-| **Recepcionista**| Acesso à pesquisa e visualização de exames        |
-| **Coletador**    | Visualização rápida das instruções de coleta      |
+## Arquitetura
 
----
+A solução utiliza Clean Architecture com projetos separados:
 
-## 📁 Estrutura de Pastas (padrão ASP.NET + Clean Code)
-
-```
+```text
 SisExaminou/
-├── Controllers/        # Lógica de interface (MVC)
-├── Views/              # Páginas Razor (.cshtml)
-├── ViewModels/         # Dados exibidos nas Views
-├── Models/             # Entidades de domínio
-├── Services/           # Regras de negócio
-├── Data/
-│   ├── Interfaces/     # Contratos dos repositórios
-│   └── Repositories/   # Implementações com ADO.NET
-├── wwwroot/            # Recursos estáticos (CSS, JS, Imagens)
-├── appsettings.json    # Configurações (ex: string de conexão)
-└── Program.cs
+├── src/
+│   ├── SisExaminou.Domain/
+│   ├── SisExaminou.Application/
+│   ├── SisExaminou.Infrastructure/
+│   │   └── DataBase/
+│   │       └── ScriptsSQL/
+│   └── SisExaminou.Web/
+├── tests/
+│   └── SisExaminou.Tests/
+├── SisExaminou.sln
+└── README.md
 ```
 
----
+### Responsabilidades
 
----
+| Projeto | Responsabilidade |
+|---|---|
+| `SisExaminou.Domain` | Entidades, objetos de valor, enums, regras e exceções de domínio. |
+| `SisExaminou.Application` | Casos de uso, DTOs, validações e contratos necessários à aplicação. |
+| `SisExaminou.Infrastructure` | ADO.NET, SQL Server, repositórios e demais implementações de infraestrutura. |
+| `SisExaminou.Web` | Controllers, ViewModels, Razor Views, arquivos estáticos e composição das dependências. |
+| `SisExaminou.Tests` | Testes unitários e de integração. |
 
-## 🚀 Como Executar Localmente
+### Direção das dependências
 
-### 1. Clone o repositório
-
-```bash
-git clone https://github.com/seu-usuario/SisExaminou.git
-cd SisExaminou
+```text
+Web ───────────────► Application ─────────► Domain
+ │
+ └────────────────► Infrastructure ───────► Application
+                              └────────────► Domain
 ```
 
----
+Regras:
 
-### 2. Abra o projeto
+- Domain não referencia nenhum outro projeto da solução.
+- Application referencia somente Domain.
+- Infrastructure referencia Application e Domain.
+- Web referencia Application e Infrastructure.
+- Tests referencia apenas os projetos necessários a cada teste.
+- Domain e Application não dependem de ASP.NET Core, Razor, ADO.NET ou SQL Server.
 
-#### 🖥️ Se estiver usando o **Visual Studio (2022 ou superior)**:
-- Abra o arquivo da solução `.sln` no Visual Studio:
-  - Menu `Arquivo` → `Abrir` → `Projeto/Solução...`
-  - Selecione o arquivo `SisExaminou.sln`
-- Aguarde o carregamento e restauração dos pacotes NuGet.
-- Configure a **string de conexão** em `appsettings.json`:
+## Tecnologias
 
-```json
-"ConnectionStrings": {
-  "DefaultConnection": "Server=SEU_SERVIDOR;Database=SisExaminou;Trusted_Connection=True;"
-}
+### Em uso
+
+- .NET 10.
+- C#.
+- ASP.NET Core MVC.
+- Razor Views.
+- HTML5 e CSS3.
+- Bootstrap.
+- jQuery.
+- xUnit.
+- Injeção de dependência nativa do ASP.NET Core.
+
+### Planejadas
+
+- ADO.NET puro, sem Entity Framework.
+- SQL Server e Azure SQL.
+- Autenticação com Cookies.
+- Claims e políticas de autorização.
+- PasswordHasher do ASP.NET Core.
+- SweetAlert2.
+- GitHub Actions.
+- Azure App Service.
+
+## Perfis de acesso planejados
+
+| Perfil | Consultar | Gerenciar conteúdo | Gerenciar usuários | Gerenciar perfis |
+|---|---:|---:|---:|---:|
+| Anônimo | Sim | Não | Não | Não |
+| Coletador | Sim | Não | Não | Não |
+| Recepcionista | Sim | Não | Não | Não |
+| TI | Sim | Sim | Sim | Não |
+| Administrador | Sim | Sim | Sim | Sim |
+
+No MVP, Coletador e Recepcionista terão o mesmo acesso funcional porque a consulta será pública. Os perfis serão mantidos para auditoria e futuras regras de acesso.
+
+## Roadmap do MVP
+
+| Sprint | Entrega | Situação |
+|---:|---|---|
+| 1 | Estrutura e escopo | Concluída |
+| 2 | Banco de dados | Planejada |
+| 3 | Consulta pública | Planejada |
+| 4 | Autenticação e autorização | Planejada |
+| 5 | Administração | Planejada |
+| 6 | Testes e segurança | Planejada |
+| 7 | CI/CD e Azure | Planejada |
+
+## Como executar localmente
+
+### Pré-requisitos
+
+- .NET 10 SDK.
+- Visual Studio 2026 ou editor compatível com .NET 10.
+
+O banco de dados ainda não é necessário para executar o template atual. Sua configuração será documentada durante a Sprint 2.
+
+### Restaurar, compilar e testar
+
+Na raiz do repositório:
+
+```powershell
+dotnet restore SisExaminou.sln
+dotnet build SisExaminou.sln -c Release --no-restore
+dotnet test tests/SisExaminou.Tests/SisExaminou.Tests.csproj -c Release --no-build
 ```
 
-- Pressione `Ctrl + F5` para executar sem depuração  
-  *(ou clique em “Iniciar” na parte superior da IDE)*
+### Executar a aplicação Web
 
----
-
-#### 💻 Se estiver usando o **Visual Studio Code**:
-- Abra o terminal integrado (`` Ctrl + ` ``)
-- Verifique se o SDK do .NET está instalado:
-
-```bash
-dotnet --version
+```powershell
+dotnet run --project src/SisExaminou.Web/SisExaminou.Web.csproj --launch-profile https
 ```
 
-- Restaure os pacotes:
+Endereços configurados no perfil local:
 
-```bash
-dotnet restore
-```
+- HTTPS: `https://localhost:7051`
+- HTTP: `http://localhost:5187`
 
-- Configure sua **string de conexão** no `appsettings.json` como acima.
-- Execute o projeto:
+As portas podem ser alteradas em `src/SisExaminou.Web/Properties/launchSettings.json`.
 
-```bash
-dotnet run
-```
+## Regras de qualidade e segurança
 
-- Acesse no navegador:
+- SQL sempre parametrizado, sem concatenação de entrada do usuário.
+- Senhas armazenadas somente como hash.
+- Nenhum segredo ou dado sensível versionado ou registrado em log.
+- Autorização validada no servidor, independentemente da visibilidade dos menus.
+- Registros administrativos preferencialmente inativados, sem exclusão física.
+- Domain e Application mantidos independentes de infraestrutura e apresentação.
+- Build Release e testes relacionados aprovados antes da conclusão de cada sprint.
 
-```
-https://localhost:5001
-```
+## Fora do escopo do MVP
 
-*(ou outra porta informada no terminal)*
+- API pública.
+- Geração de PDF.
+- Aplicação offline.
+- Suporte multilíngue.
+- Relatórios avançados.
+- Recuperação automática de senha.
+- Autenticação multifator.
+- Login social ou SSO.
+- Integrações externas.
+- Alta disponibilidade.
 
----
-
-✔️ Pronto! O sistema estará rodando localmente, com a interface acessível pelo navegador.
-
----
-
-## ✅ Boas Práticas Aplicadas
-
-  🔸 Separação clara por responsabilidades  
-  🔸 Uso de ViewModels nas Views (nunca as entidades)  
-  🔸 Acesso a dados via Repositórios com ADO.NET  
-  🔸 Lógica de negócio encapsulada em Services  
-  🔸 Injeção de dependência via Program.cs  
-  🔸 Alertas visuais com SweetAlert2 para melhor experiência  
-  🔸 Controle de acesso via Claims por perfil  
-
----
-
-## 💡 Melhorias Futuras
-
-- API REST para integração externa  
-- Geração de PDF das orientações  
-- Suporte multilíngue (PT-BR, EN, ES)  
-- Modo mobile offline para tablets em coleta  
-- Logs de acesso e relatórios de uso  
-
----
-
-## 🧠 Autor
+## Autor
 
 **Daniel Coutinho Neto**  
-Desenvolvedor .Net | C# | .Net Core | .Net Framework | SQL Server | Bootstrap  
+Desenvolvedor .NET | C# | ASP.NET Core | APIs REST | SQL Server | Backend
 📧 [danielcoutinhoneto@outlook.com](mailto:danielcoutinhoneto@outlook.com)  
 🔗 [LinkedIn](https://linkedin.com/in/daniel-coutinho-neto)  
 🌐 [danielcoutinho.dev.br](https://danielcoutinho.dev.br)
