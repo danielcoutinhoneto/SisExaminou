@@ -2,7 +2,7 @@
 
 Sistema web para consulta de exames e orientações de coleta, com foco em acesso rápido, interface simples e administração segura do conteúdo.
 
-> **Estado atual:** a Sprint 1 — Estrutura e Escopo está concluída. A solução possui a estrutura inicial em Clean Architecture, compila em Release e contém o projeto de testes. Os fluxos funcionais do MVP serão implementados nas próximas sprints.
+> **Estado atual:** as Sprints 1 — Estrutura e Escopo e 2 — Banco de Dados estão concluídas. A solução possui a estrutura inicial em Clean Architecture e um esquema SQL Server incremental validado. Os fluxos funcionais do MVP serão implementados nas próximas sprints.
 
 ## Estado da implementação
 
@@ -15,7 +15,7 @@ Sistema web para consulta de exames e orientações de coleta, com foco em acess
 - Referências entre projetos respeitando a direção das dependências.
 - Nullable reference types habilitado.
 - Bootstrap e jQuery fornecidos pelo template MVC.
-- Script SQL inicial mantido na Infrastructure como ponto de partida.
+- Provisionamento do banco `SisExaminouDB` e scripts SQL incrementais `001` a `006`, com catálogo, segurança, índices, seeds e database role de menor privilégio.
 - Build Release e execução do projeto de testes validados.
 
 ### Planejado para o MVP
@@ -53,8 +53,9 @@ SisExaminou/
 │   ├── SisExaminou.Domain/
 │   ├── SisExaminou.Application/
 │   ├── SisExaminou.Infrastructure/
-│   │   └── DataBase/
-│   │       └── ScriptsSQL/
+│   │   └── Persistence/
+│   │       └── SqlServer/
+│   │           └── Scripts/
 │   └── SisExaminou.Web/
 ├── tests/
 │   └── SisExaminou.Tests/
@@ -132,7 +133,7 @@ No MVP, Coletador e Recepcionista terão o mesmo acesso funcional porque a consu
 | Sprint | Entrega | Situação |
 |---:|---|---|
 | 1 | Estrutura e escopo | Concluída |
-| 2 | Banco de dados | Planejada |
+| 2 | Banco de dados | Concluída |
 | 3 | Consulta pública | Planejada |
 | 4 | Autenticação e autorização | Planejada |
 | 5 | Administração | Planejada |
@@ -146,7 +147,7 @@ No MVP, Coletador e Recepcionista terão o mesmo acesso funcional porque a consu
 - .NET 10 SDK.
 - Visual Studio 2026 ou editor compatível com .NET 10.
 
-O banco de dados ainda não é necessário para executar o template atual. Sua configuração será documentada durante a Sprint 2.
+O template MVC ainda executa sem conexão com banco porque os repositórios ADO.NET pertencem à Sprint 3. A ordem e os requisitos dos scripts estão documentados em `src/SisExaminou.Infrastructure/Persistence/SqlServer/Scripts/README.md`.
 
 ### Restaurar, compilar e testar
 
