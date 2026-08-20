@@ -8,7 +8,7 @@ Provisionamento e scripts incrementais do banco `SisExaminouDB`. Eles criam some
 - Identidade de implantação com permissão para criar schemas, tabelas, índices e database roles.
 - Identidade de implantação separada da identidade usada pela aplicação em execução.
 
-O arquivo `000_CreateDatabase.sql` deve ser executado em `master` e cria `SisExaminouDB` apenas quando ele ainda não existe. Os scripts `001` a `006` devem ser executados conectados ao `SisExaminouDB` e recusam execução nos bancos de sistema.
+O arquivo `000_CreateDatabase.sql` deve ser executado em `master` e cria `SisExaminouDB` apenas quando ele ainda não existe. Os scripts `001` em diante devem ser executados conectados ao `SisExaminouDB` e recusam execução nos bancos de sistema.
 
 ## Ordem obrigatória
 
@@ -19,8 +19,9 @@ O arquivo `000_CreateDatabase.sql` deve ser executado em `master` e cria `SisExa
 4. `004_CreateIndexes.sql`
 5. `005_SeedProfilesAndPermissions.sql`
 6. `006_CreateApplicationRole.sql`
+7. `007_AddExameCodigoFormatCheck.sql`
 
-Não pule números. `001` a `006` validam a migração anterior e registram o sucesso em `dbo.MigracaoBanco`. Portanto, são seis migrações aplicadas dentro de um único banco, e não seis bancos.
+Não pule números. As migrações validam a versão anterior e registram o sucesso em `dbo.MigracaoBanco`. Portanto, todas são aplicadas dentro de um único banco; não representam bancos diferentes.
 
 ## Execução
 
@@ -40,7 +41,7 @@ Não execute migrações automaticamente no startup da aplicação. A aplicaçã
 ## Reexecução e alteração
 
 - `000` não recria nem altera `SisExaminouDB` quando ele já existe.
-- `001` a `004` e `006` encerram sem alteração quando sua versão já está registrada.
+- `001` a `004` e `006` em diante encerram sem alteração quando sua versão já está registrada.
 - `005` revalida os seeds por código e pode ser executado novamente sem duplicá-los.
 - Um script aplicado em qualquer ambiente torna-se imutável.
 - Qualquer mudança posterior recebe um novo número; não edite nem reutilize uma versão aplicada.
@@ -86,3 +87,5 @@ As justificativas completas do modelo estão em `docs-internos/sprints/sprints_2
 ## Estado local
 
 Em 2026-08-07, `SisExaminouDB` já existia na instância `.\SQLEXPRESS` apenas com `dbo.sysdiagrams`. O provisionamento foi preservado de forma idempotente e as migrações `001` a `006` foram aplicadas com sucesso nesse banco.
+
+Em 2026-08-19, a migração `007` foi aplicada e reexecutada com sucesso. A constraint `CK_Exame_Codigo_Formato` ficou habilitada e confiável, restringindo códigos a letras maiúsculas, números e hífen.

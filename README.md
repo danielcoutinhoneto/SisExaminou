@@ -15,7 +15,7 @@ Sistema web para consulta de exames e orientações de coleta, com foco em acess
 - Referências entre projetos respeitando a direção das dependências.
 - Nullable reference types habilitado.
 - Bootstrap e jQuery fornecidos pelo template MVC.
-- Provisionamento do banco `SisExaminouDB` e scripts SQL incrementais `001` a `006`, com catálogo, segurança, índices, seeds e database role de menor privilégio.
+- Provisionamento do banco `SisExaminouDB` e scripts SQL incrementais `001` a `007`, com catálogo, segurança, índices, seeds, database role de menor privilégio e validação do código URL-safe.
 - Build Release e execução do projeto de testes validados.
 
 ### Planejado para o MVP
@@ -134,7 +134,7 @@ No MVP, Coletador e Recepcionista terão o mesmo acesso funcional porque a consu
 |---:|---|---|
 | 1 | Estrutura e escopo | Concluída |
 | 2 | Banco de dados | Concluída |
-| 3 | Consulta pública | Planejada |
+| 3 | Consulta pública | Em andamento |
 | 4 | Autenticação e autorização | Planejada |
 | 5 | Administração | Planejada |
 | 6 | Testes e segurança | Planejada |
@@ -199,6 +199,7 @@ As portas podem ser alteradas em `src/SisExaminou.Web/Properties/launchSettings.
 
 **Daniel Coutinho Neto**  
 Desenvolvedor .NET | C# | ASP.NET Core | APIs REST | SQL Server | Backend
+
 📧 [danielcoutinhoneto@outlook.com](mailto:danielcoutinhoneto@outlook.com)  
 🔗 [LinkedIn](https://linkedin.com/in/daniel-coutinho-neto)  
 🌐 [danielcoutinho.dev.br](https://danielcoutinho.dev.br)
