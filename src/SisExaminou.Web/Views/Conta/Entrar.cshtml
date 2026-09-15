@@ -1,0 +1,43 @@
+@model SisExaminou.Web.Models.Seguranca.LoginInputModel
+@{
+    ViewData["Title"] = "Entrar";
+}
+
+<div class="row justify-content-center py-4">
+    <div class="col-12 col-md-8 col-lg-5">
+        <section class="card border-0 shadow-sm" aria-labelledby="titulo-login">
+            <div class="card-body p-4 p-lg-5">
+                <p class="text-uppercase fw-semibold text-primary mb-2">Área restrita</p>
+                <h1 id="titulo-login" class="h2 mb-3">Entrar no SisExaminou</h1>
+                <p class="text-secondary">
+                    Use seu login administrativo. A consulta de exames continua pública.
+                </p>
+
+                <form method="post" asp-action="Entrar" novalidate>
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                    <input asp-for="ReturnUrl" type="hidden" />
+
+                    <div class="mb-3">
+                        <label asp-for="Login" class="form-label"></label>
+                        <input asp-for="Login" class="form-control" autocomplete="username" autofocus />
+                        <span asp-validation-for="Login" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Senha" class="form-label"></label>
+                        <input asp-for="Senha" class="form-control" autocomplete="current-password" />
+                        <span asp-validation-for="Senha" class="text-danger"></span>
+                    </div>
+
+                    <div class="d-grid">
+                        <button class="btn btn-primary" type="submit">Entrar</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

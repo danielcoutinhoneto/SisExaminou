@@ -1,4 +1,5 @@
 ﻿<!DOCTYPE html>
+@using SisExaminou.Application.Seguranca.Configuracao
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8" />
@@ -25,6 +26,33 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Exames" asp-action="Index">Consultar exames</a>
                         </li>
+                        @if (User.HasClaim(
+                            CodigosSeguranca.ClaimPermissao,
+                            CodigosSeguranca.PermissaoConteudoGerenciar))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Administracao" asp-action="Index">Administração</a>
+                            </li>
+                        }
+                    </ul>
+                    <ul class="navbar-nav align-items-sm-center">
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <li class="nav-item">
+                                <span class="nav-link text-dark">Olá, @User.Identity.Name</span>
+                            </li>
+                            <li class="nav-item">
+                                <form method="post" asp-controller="Conta" asp-action="Sair">
+                                    <button type="submit" class="btn btn-link nav-link text-dark">Sair</button>
+                                </form>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Conta" asp-action="Entrar">Entrar</a>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>

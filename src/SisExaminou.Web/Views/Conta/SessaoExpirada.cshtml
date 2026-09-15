@@ -1,0 +1,15 @@
+@{
+    ViewData["Title"] = "Sessão encerrada";
+    var returnUrl = ViewData["ReturnUrl"] as string;
+}
+
+<div class="text-center py-5">
+    <p class="display-4 mb-2" aria-hidden="true">401</p>
+    <h1 class="display-6">Sua sessão foi encerrada</h1>
+    <p class="lead text-secondary">
+        Entre novamente. Isso pode ocorrer por expiração, inativação do usuário ou alteração da credencial.
+    </p>
+    <a class="btn btn-primary"
+       asp-action="Entrar"
+       asp-route-returnUrl="@returnUrl">Entrar novamente</a>
+</div>

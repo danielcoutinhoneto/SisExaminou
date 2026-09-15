@@ -13,6 +13,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SisExaminou.Infrastructure"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SisExaminou.Tests", "tests\SisExaminou.Tests\SisExaminou.Tests.csproj", "{8826634A-7153-4F77-ACD9-D19E79593B7B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{07C2787E-EAC7-C090-1BA3-A61EC2A24D84}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SisExaminou.BootstrapAdmin", "tools\SisExaminou.BootstrapAdmin\SisExaminou.BootstrapAdmin.csproj", "{E743340C-13A4-41FF-8C48-F1C058E490ED}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,9 +43,16 @@ Global
 		{8826634A-7153-4F77-ACD9-D19E79593B7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8826634A-7153-4F77-ACD9-D19E79593B7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8826634A-7153-4F77-ACD9-D19E79593B7B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E743340C-13A4-41FF-8C48-F1C058E490ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E743340C-13A4-41FF-8C48-F1C058E490ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E743340C-13A4-41FF-8C48-F1C058E490ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E743340C-13A4-41FF-8C48-F1C058E490ED}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E743340C-13A4-41FF-8C48-F1C058E490ED} = {07C2787E-EAC7-C090-1BA3-A61EC2A24D84}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {76A971A8-E973-4A0A-84A3-025841D6810A}

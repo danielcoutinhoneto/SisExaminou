@@ -2,7 +2,7 @@
 
 Sistema web para consulta de exames e orientações de coleta, com foco em acesso rápido, interface simples e administração segura do conteúdo.
 
-> **Estado atual:** as Sprints 1 — Estrutura e Escopo, 2 — Banco de Dados e 3 — Consulta Pública estão concluídas. A aplicação oferece pesquisa e detalhe públicos de exames, com filtros, paginação, ADO.NET parametrizado, tratamento seguro de falhas e testes automatizados. A Sprint 4 — Autenticação e Autorização é a próxima entrega planejada.
+> **Estado atual:** as Sprints 1 a 4 estão concluídas. Além da consulta pública, a aplicação possui autenticação por cookie, autorização por Claims e políticas, bloqueio temporário, revalidação de sessão e bootstrap explícito do primeiro administrador. A Sprint 5 — Administração é a próxima entrega planejada.
 
 ## Estado da implementação
 
@@ -18,6 +18,12 @@ Sistema web para consulta de exames e orientações de coleta, com foco em acess
 - Provisionamento do banco `SisExaminouDB` e scripts SQL incrementais `001` a `007`, com catálogo, segurança, índices, dados de referência, database role de menor privilégio e validação do código URL-safe.
 - Carga manual de catálogo sintético, projetada para ser idempotente, exclusiva para desenvolvimento e separada das migrações.
 - Build Release e execução do projeto de testes validados.
+- Login pelo campo `Login`, logout e páginas de acesso negado, sessão expirada e indisponibilidade.
+- Cookie `HttpOnly`, seguro fora de Development, `SameSite=Lax`, ticket de 30 minutos e renovação deslizante.
+- Claims de usuário, perfil, permissões e `VersaoCredencial`, com revalidação no banco a cada cinco minutos.
+- Políticas `ConteudoGerenciar`, `UsuariosGerenciar` e `PerfisGerenciar`.
+- Bloqueio de 15 minutos após cinco tentativas inválidas e limpeza das falhas após sucesso.
+- Bootstrap administrativo manual em `tools/SisExaminou.BootstrapAdmin`, sem senha versionada ou passada por argumento.
 
 ### Consulta pública entregue na Sprint 3
 
@@ -30,8 +36,6 @@ Sistema web para consulta de exames e orientações de coleta, com foco em acess
 
 ### Planejado para o MVP
 
-- Login e logout com autenticação por cookies.
-- Autorização com Claims, perfis e permissões.
 - Administração de categorias, exames e orientações.
 - Administração de usuários, perfis e permissões.
 - Inativação de registros sem exclusão física.
@@ -65,6 +69,8 @@ SisExaminou/
 │   └── SisExaminou.Web/
 ├── tests/
 │   └── SisExaminou.Tests/
+├── tools/
+│   └── SisExaminou.BootstrapAdmin/
 ├── SisExaminou.sln
 └── README.md
 ```
@@ -112,13 +118,13 @@ Regras:
 - Injeção de dependência nativa do ASP.NET Core.
 - ADO.NET com `Microsoft.Data.SqlClient`.
 - SQL Server.
+- Autenticação por Cookies.
+- Claims e políticas de autorização.
+- `PasswordHasher` do ASP.NET Core.
 
 ### Planejadas
 
 - Azure SQL.
-- Autenticação com Cookies.
-- Claims e políticas de autorização.
-- PasswordHasher do ASP.NET Core.
 - SweetAlert2.
 - GitHub Actions.
 - Azure App Service.
@@ -142,8 +148,8 @@ No MVP, Coletador e Recepcionista terão o mesmo acesso funcional porque a consu
 | 1 | Estrutura e escopo | Concluída |
 | 2 | Banco de dados | Concluída |
 | 3 | Consulta pública | Concluída |
-| 4 | Autenticação e autorização | Planejada |
-| 5 | Administração | Planejada |
+| 4 | Autenticação e autorização | Concluída |
+| 5 | Administração | Próxima |
 | 6 | Testes e segurança | Planejada |
 | 7 | CI/CD e Azure | Planejada |
 
@@ -186,6 +192,20 @@ Endereços configurados no perfil local:
 - HTTP: `http://localhost:5187`
 
 As portas podem ser alteradas em `src/SisExaminou.Web/Properties/launchSettings.json`.
+
+### Criar explicitamente o primeiro administrador
+
+O bootstrap nunca roda no startup da Web. Após aplicar as migrações `001` a `007`, abra um PowerShell, defina a conexão apenas na sessão atual e execute:
+
+```powershell
+$env:SISEXAMINOU_BOOTSTRAP_CONNECTION_STRING = "Server=.\SQLEXPRESS;Database=SisExaminouDB;Integrated Security=True;Encrypt=True;TrustServerCertificate=True"
+dotnet run --project tools/SisExaminou.BootstrapAdmin/SisExaminou.BootstrapAdmin.csproj
+Remove-Item Env:SISEXAMINOU_BOOTSTRAP_CONNECTION_STRING
+```
+
+O programa solicita nome, login, email opcional e frase-senha de forma interativa. A frase-senha não aparece no terminal e não deve ser colocada no comando, em `appsettings`, User Secrets, variável de ambiente ou log. A operação cria um usuário somente se não existir administrador ativo; uma reexecução não cria outro.
+
+Para ambientes sem autenticação integrada, obtenha a connection string de um cofre de segredos e mantenha seu valor fora do histórico do terminal e do repositório.
 
 ## Regras de qualidade e segurança
 

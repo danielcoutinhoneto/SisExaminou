@@ -1,0 +1,19 @@
+@using SisExaminou.Application.Seguranca.Configuracao
+@{
+    ViewData["Title"] = "Administração";
+}
+
+<section class="hero-catalogo rounded-3 p-4 p-md-5">
+    <p class="text-uppercase fw-semibold text-primary mb-2">Área protegida</p>
+    <h1 class="display-6 fw-bold">Administração</h1>
+    <p class="lead text-secondary mb-4">
+        Autenticação e autorização estão ativas. Os cadastros administrativos serão entregues na Sprint 5.
+    </p>
+
+    <dl class="row mb-0">
+        <dt class="col-sm-4">Usuário</dt>
+        <dd class="col-sm-8">@User.Identity?.Name</dd>
+        <dt class="col-sm-4">Perfil</dt>
+        <dd class="col-sm-8">@User.FindFirst(CodigosSeguranca.ClaimPerfil)?.Value</dd>
+    </dl>
+</section>
