@@ -361,6 +361,3 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-
-# Planejamento interno local (não versionar)
-/docs-internos/sprints/

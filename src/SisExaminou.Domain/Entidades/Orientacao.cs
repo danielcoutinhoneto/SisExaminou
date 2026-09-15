@@ -1,19 +1,49 @@
-﻿using SisExaminou.Domain.Entidades;
+using SisExaminou.Domain.Validacoes;
 
-namespace SisExaminou.Domain.Entidades
+namespace SisExaminou.Domain.Entidades;
+
+public sealed class Orientacao
 {
-    public class Orientacao
+    public Orientacao(
+        int orientacaoId,
+        int exameId,
+        string titulo,
+        TipoOrientacao tipo,
+        string conteudo,
+        int ordemExibicao,
+        bool ativo,
+        DateTime criadoEmUtc,
+        DateTime? atualizadoEmUtc,
+        byte[]? versao)
     {
-        public int OrientacaoId { get; set; }
-        public Exame ExameId { get; set; } = new Exame();
-        public string Titulo { get; set; } = string.Empty;
-        public string TipoOrientacao { get; set; } = string.Empty;
-        public string Conteudo { get; set; } = string.Empty;
-        public int OrdemExibicao { get; set; } = 1;
-        public bool Ativo { get; set; } = true;
-        public DateTime CriadoEmUtc { get; set; } = DateTime.UtcNow;
-        public DateTime? AtualizadoEmUtc { get; set; } = null;
-        public byte[] Versao { get; set; } = new byte[0];
-    }
-}
+        if (ordemExibicao <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(ordemExibicao));
+        }
 
+        OrientacaoId = ValidacaoDominio.Identificador(orientacaoId, nameof(orientacaoId));
+        ExameId = ValidacaoDominio.Identificador(exameId, nameof(exameId));
+        Titulo = ValidacaoDominio.TextoObrigatorio(titulo, 150, nameof(titulo));
+        Tipo = tipo;
+        Conteudo = ValidacaoDominio.TextoObrigatorio(conteudo, int.MaxValue, nameof(conteudo));
+        OrdemExibicao = ordemExibicao;
+        Ativo = ativo;
+        CriadoEmUtc = criadoEmUtc;
+        AtualizadoEmUtc = atualizadoEmUtc;
+        Versao = ValidacaoDominio.Versao(versao);
+    }
+
+    public int OrientacaoId { get; }
+    public int ExameId { get; }
+    public string Titulo { get; private set; }
+    public TipoOrientacao Tipo { get; private set; }
+    public string Conteudo { get; private set; }
+    public int OrdemExibicao { get; private set; }
+    public bool Ativo { get; private set; }
+    public DateTime CriadoEmUtc { get; }
+    public DateTime? AtualizadoEmUtc { get; private set; }
+    public byte[] Versao { get; private set; }
+
+    public void Ativar() => Ativo = true;
+    public void Inativar() => Ativo = false;
+}

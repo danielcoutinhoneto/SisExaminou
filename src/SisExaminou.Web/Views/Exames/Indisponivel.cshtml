@@ -1,0 +1,10 @@
+@model SisExaminou.Web.Models.Catalogo.CatalogoErroViewModel
+@{
+    ViewData["Title"] = "Consulta indisponível";
+}
+
+<div class="text-center py-5" role="alert">
+    <h1 class="display-6">Consulta temporariamente indisponível</h1>
+    <p class="lead text-secondary">@Model.Mensagem</p>
+    <a class="btn btn-primary" asp-action="Index">Tentar novamente</a>
+</div>

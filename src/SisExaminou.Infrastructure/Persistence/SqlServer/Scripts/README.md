@@ -34,9 +34,37 @@ sqlcmd -S "<servidor>" -d "master" -E -b -i ".\000_CreateDatabase.sql"
 sqlcmd -S "<servidor>" -d "SisExaminouDB" -E -b -i ".\001_CreateSchemasAndVersioning.sql"
 ```
 
-Repita o segundo comando para as migrações `002` a `006`, respeitando a ordem. A opção `-b` faz o processo retornar falha quando o SQL Server informar erro.
+Repita o segundo comando para as migrações `002` a `007`, respeitando a ordem. A opção `-b` faz o processo retornar falha quando o SQL Server informar erro.
 
 Não execute migrações automaticamente no startup da aplicação. A aplicação pode iniciar com várias instâncias simultâneas e não deve possuir privilégios de DDL.
+
+## Catálogo demonstrativo
+
+O arquivo `../Samples/SeedDevelopmentCatalog.sql` contém dados sintéticos para desenvolvimento da consulta pública. Ele não é uma migração, não recebe número e não deve ser executado em produção.
+
+Antes da carga:
+
+1. Aplique as migrações `001` a `007` no `SisExaminouDB`.
+2. Abra o seed conectado ao `SisExaminouDB`.
+3. Autorize a carga na mesma conexão:
+
+```sql
+EXEC sys.sp_set_session_context
+    @key = N'PermitirCargaDemonstrativa',
+    @value = 1;
+```
+
+4. Sem trocar de conexão, execute todo o `SeedDevelopmentCatalog.sql`.
+
+O comando exibido no comentário inicial do seed é somente uma instrução: texto entre `/*` e `*/` não é executado pelo SQL Server.
+
+Resultado esperado:
+
+| Tipos | Categorias | Materiais | Exames | Publicáveis | Inativos | Ativos sem orientação ativa |
+|---:|---:|---:|---:|---:|---:|---:|
+| 2 | 2 | 3 | 8 | 6 | 1 | 1 |
+
+A carga utiliza nomes e códigos marcados como demonstração, não depende de IDs fixos e foi construída para não duplicar registros. A idempotência foi comprovada por reexecução intencional em 2026-09-15, conforme a evidência registrada em **Estado local**.
 
 ## Reexecução e alteração
 
@@ -72,9 +100,9 @@ A role permite leitura dos dois schemas, escrita nos cadastros administrados e e
 - A aplicação deve armazenar somente `SenhaHash`, gerado por `PasswordHasher`.
 - O executor de migrações e a conta da aplicação devem usar segredos externos ao repositório.
 
-## Evidências necessárias
+## Evidências históricas da Sprint 2
 
-Antes de encerrar a Sprint 2:
+As verificações abaixo correspondem ao encerramento da Sprint 2, quando existiam somente as migrações `001` a `006`. Por isso, a evidência histórica menciona seis versões:
 
 1. Execute todos os scripts em um banco vazio.
 2. Confirme as seis versões em `dbo.MigracaoBanco`.
@@ -82,10 +110,12 @@ Antes de encerrar a Sprint 2:
 4. Valide PKs, FKs, checks, unicidades, índices filtrados, inativação e `rowversion`.
 5. Teste a role com uma conta dedicada e confirme que DDL e `DELETE` nos cadastros principais são negados.
 
-As justificativas completas do modelo estão em `docs-internos/sprints/sprints_2_detalhamento.md`.
-
 ## Estado local
 
 Em 2026-08-07, `SisExaminouDB` já existia na instância `.\SQLEXPRESS` apenas com `dbo.sysdiagrams`. O provisionamento foi preservado de forma idempotente e as migrações `001` a `006` foram aplicadas com sucesso nesse banco.
 
 Em 2026-08-19, a migração `007` foi aplicada e reexecutada com sucesso. A constraint `CK_Exame_Codigo_Formato` ficou habilitada e confiável, restringindo códigos a letras maiúsculas, números e hífen.
+
+Em 2026-08-20, o catálogo demonstrativo foi carregado manualmente no `SisExaminouDB`. Foram confirmados dois tipos, duas categorias, três materiais, oito exames, seis exames publicáveis, um exame inativo e um exame ativo sem orientação ativa.
+
+Em 2026-09-15, o seed foi reexecutado intencionalmente na mesma base. Antes e depois permaneceram: dois tipos, duas categorias, três materiais, oito exames, nove sinônimos, dez orientações, oito associações exame/material e seis exames publicáveis. Nenhum registro foi duplicado; a comparação das contagens retornou `Idempotente = true`.

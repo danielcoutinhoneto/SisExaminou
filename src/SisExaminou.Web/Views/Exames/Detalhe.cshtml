@@ -1,0 +1,95 @@
+@model SisExaminou.Web.Models.Catalogo.ExameDetalheViewModel
+@{
+    ViewData["Title"] = Model.Nome;
+}
+
+<nav aria-label="Navegação estrutural" class="mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index">Exames</a></li>
+        <li class="breadcrumb-item active" aria-current="page">@Model.Codigo</li>
+    </ol>
+</nav>
+
+<header class="mb-4">
+    <span class="badge text-bg-primary mb-2">@Model.Codigo</span>
+    <h1 class="display-6 fw-bold">@Model.Nome</h1>
+    @if (!string.IsNullOrWhiteSpace(Model.NomePopular))
+    {
+        <p class="lead text-secondary">Também conhecido como @Model.NomePopular</p>
+    }
+    <p class="mb-1"><strong>Tipo:</strong> @Model.TipoExame</p>
+    <p class="mb-1"><strong>Categoria:</strong> @Model.Categoria</p>
+    @if (!string.IsNullOrWhiteSpace(Model.PrazoResultado))
+    {
+        <p class="mb-0"><strong>Prazo:</strong> @Model.PrazoResultado</p>
+    }
+</header>
+
+@if (!string.IsNullOrWhiteSpace(Model.DescricaoPopular))
+{
+    <section class="card border-0 bg-light mb-4" aria-labelledby="titulo-descricao">
+        <div class="card-body">
+            <h2 id="titulo-descricao" class="h4">Sobre o exame</h2>
+            <p class="mb-0">@Model.DescricaoPopular</p>
+        </div>
+    </section>
+}
+
+@if (Model.Sinonimos.Count > 0)
+{
+    <section class="mb-4" aria-labelledby="titulo-sinonimos">
+        <h2 id="titulo-sinonimos" class="h4">Outros nomes</h2>
+        <p>@string.Join(", ", Model.Sinonimos)</p>
+    </section>
+}
+
+<section class="mb-4" aria-labelledby="titulo-orientacoes">
+    <h2 id="titulo-orientacoes" class="h4 mb-3">Orientações</h2>
+    <div class="row g-3">
+        @foreach (var orientacao in Model.Orientacoes)
+        {
+            <div class="col-12">
+                <article class="card border-start border-primary border-4">
+                    <div class="card-body">
+                        <p class="text-primary fw-semibold small mb-1">@orientacao.Tipo</p>
+                        <h3 class="h5">@orientacao.Titulo</h3>
+                        <p class="mb-0 conteudo-orientacao">@orientacao.Conteudo</p>
+                    </div>
+                </article>
+            </div>
+        }
+    </div>
+</section>
+
+@if (Model.Materiais.Count > 0)
+{
+    <section class="mb-4" aria-labelledby="titulo-materiais">
+        <h2 id="titulo-materiais" class="h4 mb-3">Materiais</h2>
+        <div class="row g-3">
+            @foreach (var material in Model.Materiais)
+            {
+                <div class="col-12 col-md-6">
+                    <article class="card h-100">
+                        <div class="card-body">
+                            @if (material.Principal)
+                            {
+                                <span class="badge text-bg-success mb-2">Material principal</span>
+                            }
+                            <h3 class="h5">@material.Nome</h3>
+                            @if (!string.IsNullOrWhiteSpace(material.Sigla))
+                            {
+                                <p class="text-secondary mb-2">Sigla: @material.Sigla</p>
+                            }
+                            @if (!string.IsNullOrWhiteSpace(material.Observacao))
+                            {
+                                <p class="mb-0">@material.Observacao</p>
+                            }
+                        </div>
+                    </article>
+                </div>
+            }
+        </div>
+    </section>
+}
+
+<a class="btn btn-outline-secondary" asp-action="Index">Voltar para a pesquisa</a>
