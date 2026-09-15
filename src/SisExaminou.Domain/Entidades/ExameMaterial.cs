@@ -1,11 +1,26 @@
-﻿namespace SisExaminou.Domain.Entidades
+using SisExaminou.Domain.Validacoes;
+
+namespace SisExaminou.Domain.Entidades;
+
+public sealed class ExameMaterial
 {
-    public class ExameMaterial
+    public ExameMaterial(
+        int exameId,
+        int materialId,
+        bool principal,
+        string? observacao,
+        DateTime criadoEmUtc)
     {
-        public Exame ExameId { get; set; } = new Exame();
-        public Material MaterialId { get; set; } = new Material();
-        public bool Principal { get; set; } = false;
-        public string Observacao { get; set; } = string.Empty;
-        public DateTime CriadoEmUtc { get; set; } = DateTime.UtcNow;
+        ExameId = ValidacaoDominio.Identificador(exameId, nameof(exameId));
+        MaterialId = ValidacaoDominio.Identificador(materialId, nameof(materialId));
+        Principal = principal;
+        Observacao = ValidacaoDominio.TextoOpcional(observacao, 300, nameof(observacao));
+        CriadoEmUtc = criadoEmUtc;
     }
+
+    public int ExameId { get; }
+    public int MaterialId { get; }
+    public bool Principal { get; private set; }
+    public string? Observacao { get; private set; }
+    public DateTime CriadoEmUtc { get; }
 }

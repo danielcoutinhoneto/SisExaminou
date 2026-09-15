@@ -1,0 +1,138 @@
+@model SisExaminou.Web.Models.Catalogo.PesquisaExamesViewModel
+@{
+    ViewData["Title"] = "Consultar exames";
+}
+
+<section class="catalogo-cabecalho mb-4">
+    <p class="text-uppercase fw-semibold text-primary mb-2">Consulta pública</p>
+    <h1 class="display-6 fw-bold">Encontre um exame</h1>
+    <p class="lead text-secondary mb-0">
+        Pesquise pelo código, nome, nome popular ou sinônimo e consulte as orientações disponíveis.
+    </p>
+</section>
+
+<section class="card border-0 shadow-sm mb-4" aria-labelledby="titulo-filtros">
+    <div class="card-body p-4">
+        <h2 id="titulo-filtros" class="h5 mb-3">Pesquisa e filtros</h2>
+        <form method="get" asp-controller="Exames" asp-action="Index">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+            <div class="row g-3 align-items-end">
+                <div class="col-12 col-lg-6">
+                    <label asp-for="Termo" class="form-label"></label>
+                    <input asp-for="Termo" class="form-control"
+                           placeholder="Ex.: DEMO-ALFA ou Exame Alfa" autocomplete="off" />
+                    <span asp-validation-for="Termo" class="text-danger"></span>
+                </div>
+                <div class="col-12 col-md-6 col-lg-2">
+                    <label asp-for="TipoExameId" class="form-label"></label>
+                    <select asp-for="TipoExameId" class="form-select">
+                        <option value="">Todos</option>
+                        @foreach (var tipo in Model.Tipos)
+                        {
+                            <option value="@tipo.Id">@tipo.Nome</option>
+                        }
+                    </select>
+                    <span asp-validation-for="TipoExameId" class="text-danger"></span>
+                </div>
+                <div class="col-12 col-md-6 col-lg-2">
+                    <label asp-for="CategoriaId" class="form-label"></label>
+                    <select asp-for="CategoriaId" class="form-select">
+                        <option value="">Todas</option>
+                        @foreach (var categoria in Model.Categorias)
+                        {
+                            <option value="@categoria.Id">@categoria.Nome</option>
+                        }
+                    </select>
+                    <span asp-validation-for="CategoriaId" class="text-danger"></span>
+                </div>
+                <div class="col-12 col-lg-2 d-grid">
+                    <button type="submit" class="btn btn-primary">Pesquisar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+
+@if (ViewData.ModelState.IsValid)
+{
+    if (Model.TotalItens == 0)
+    {
+        <div class="alert alert-info" role="status">
+            Nenhum exame publicável foi encontrado com os critérios informados.
+        </div>
+    }
+    else
+    {
+        <div class="d-flex flex-column flex-md-row justify-content-between gap-2 mb-3">
+            <h2 class="h4 mb-0">Resultados</h2>
+            <p class="text-secondary mb-0" aria-live="polite">
+                Exibindo @Model.PrimeiroItem–@Model.UltimoItem de @Model.TotalItens
+            </p>
+        </div>
+
+        <div class="row g-3">
+            @foreach (var exame in Model.Exames)
+            {
+                <div class="col-12">
+                    <article class="card resultado-exame h-100">
+                        <div class="card-body">
+                            <div class="d-flex flex-column flex-md-row justify-content-between gap-3">
+                                <div>
+                                    <span class="badge text-bg-light border mb-2">@exame.Codigo</span>
+                                    <h3 class="h5 mb-1">@exame.Nome</h3>
+                                    @if (!string.IsNullOrWhiteSpace(exame.NomePopular))
+                                    {
+                                        <p class="text-secondary mb-2">Também conhecido como @exame.NomePopular</p>
+                                    }
+                                    <p class="small mb-0">
+                                        <span class="fw-semibold">@exame.TipoExame</span>
+                                        <span aria-hidden="true"> · </span>
+                                        @exame.Categoria
+                                    </p>
+                                    @if (!string.IsNullOrWhiteSpace(exame.PrazoResultado))
+                                    {
+                                        <p class="small text-secondary mt-2 mb-0">Prazo: @exame.PrazoResultado</p>
+                                    }
+                                </div>
+                                <div class="align-self-md-center">
+                                    <a class="btn btn-outline-primary"
+                                       asp-route="DetalheExame"
+                                       asp-route-codigo="@exame.Codigo">Ver orientações</a>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            }
+        </div>
+
+        @if (Model.TotalPaginas > 1)
+        {
+            <nav class="mt-4" aria-label="Paginação dos exames">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item @(!Model.TemPaginaAnterior ? "disabled" : null)">
+                        <a class="page-link" asp-action="Index"
+                           asp-route-Termo="@Model.Termo"
+                           asp-route-TipoExameId="@Model.TipoExameId"
+                           asp-route-CategoriaId="@Model.CategoriaId"
+                           asp-route-Pagina="@(Model.Pagina - 1)">Anterior</a>
+                    </li>
+                    <li class="page-item disabled">
+                        <span class="page-link">Página @Model.Pagina de @Model.TotalPaginas</span>
+                    </li>
+                    <li class="page-item @(!Model.TemProximaPagina ? "disabled" : null)">
+                        <a class="page-link" asp-action="Index"
+                           asp-route-Termo="@Model.Termo"
+                           asp-route-TipoExameId="@Model.TipoExameId"
+                           asp-route-CategoriaId="@Model.CategoriaId"
+                           asp-route-Pagina="@(Model.Pagina + 1)">Próxima</a>
+                    </li>
+                </ul>
+            </nav>
+        }
+    }
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

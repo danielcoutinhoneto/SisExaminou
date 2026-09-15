@@ -2,7 +2,7 @@
 
 Sistema web para consulta de exames e orientações de coleta, com foco em acesso rápido, interface simples e administração segura do conteúdo.
 
-> **Estado atual:** as Sprints 1 — Estrutura e Escopo e 2 — Banco de Dados estão concluídas. A solução possui a estrutura inicial em Clean Architecture e um esquema SQL Server incremental validado. Os fluxos funcionais do MVP serão implementados nas próximas sprints.
+> **Estado atual:** as Sprints 1 — Estrutura e Escopo, 2 — Banco de Dados e 3 — Consulta Pública estão concluídas. A aplicação oferece pesquisa e detalhe públicos de exames, com filtros, paginação, ADO.NET parametrizado, tratamento seguro de falhas e testes automatizados. A Sprint 4 — Autenticação e Autorização é a próxima entrega planejada.
 
 ## Estado da implementação
 
@@ -15,22 +15,27 @@ Sistema web para consulta de exames e orientações de coleta, com foco em acess
 - Referências entre projetos respeitando a direção das dependências.
 - Nullable reference types habilitado.
 - Bootstrap e jQuery fornecidos pelo template MVC.
-- Provisionamento do banco `SisExaminouDB` e scripts SQL incrementais `001` a `007`, com catálogo, segurança, índices, seeds, database role de menor privilégio e validação do código URL-safe.
+- Provisionamento do banco `SisExaminouDB` e scripts SQL incrementais `001` a `007`, com catálogo, segurança, índices, dados de referência, database role de menor privilégio e validação do código URL-safe.
+- Carga manual de catálogo sintético, projetada para ser idempotente, exclusiva para desenvolvimento e separada das migrações.
 - Build Release e execução do projeto de testes validados.
+
+### Consulta pública entregue na Sprint 3
+
+- Entidades e regras mínimas de publicação no Domain.
+- DTOs, filtros, contratos e casos de uso na Application.
+- Consultas ADO.NET parametrizadas, com paginação e relevância, na Infrastructure.
+- Pesquisa e detalhe anônimos com Controllers, ViewModels e Razor Views responsivas.
+- Respostas amigáveis para item inexistente e indisponibilidade do banco.
+- Testes unitários, integrados com SQL Server e do fluxo Web em memória.
 
 ### Planejado para o MVP
 
-- Consulta pública de exames por nome ou tipo.
-- Visualização de detalhes e orientações de coleta.
-- Persistência com ADO.NET puro e SQL Server/Azure SQL.
 - Login e logout com autenticação por cookies.
 - Autorização com Claims, perfis e permissões.
 - Administração de categorias, exames e orientações.
 - Administração de usuários, perfis e permissões.
 - Inativação de registros sem exclusão física.
-- Tratamento seguro de erros e logging técnico.
 - Health check da aplicação e do banco de dados.
-- Testes unitários e de integração dos fluxos críticos.
 - Integração e entrega contínuas com GitHub Actions.
 - Publicação em Azure App Service e Azure SQL.
 
@@ -55,6 +60,7 @@ SisExaminou/
 │   ├── SisExaminou.Infrastructure/
 │   │   └── Persistence/
 │   │       └── SqlServer/
+│   │           ├── Samples/
 │   │           └── Scripts/
 │   └── SisExaminou.Web/
 ├── tests/
@@ -104,11 +110,12 @@ Regras:
 - jQuery.
 - xUnit.
 - Injeção de dependência nativa do ASP.NET Core.
+- ADO.NET com `Microsoft.Data.SqlClient`.
+- SQL Server.
 
 ### Planejadas
 
-- ADO.NET puro, sem Entity Framework.
-- SQL Server e Azure SQL.
+- Azure SQL.
 - Autenticação com Cookies.
 - Claims e políticas de autorização.
 - PasswordHasher do ASP.NET Core.
@@ -134,7 +141,7 @@ No MVP, Coletador e Recepcionista terão o mesmo acesso funcional porque a consu
 |---:|---|---|
 | 1 | Estrutura e escopo | Concluída |
 | 2 | Banco de dados | Concluída |
-| 3 | Consulta pública | Em andamento |
+| 3 | Consulta pública | Concluída |
 | 4 | Autenticação e autorização | Planejada |
 | 5 | Administração | Planejada |
 | 6 | Testes e segurança | Planejada |
@@ -146,8 +153,9 @@ No MVP, Coletador e Recepcionista terão o mesmo acesso funcional porque a consu
 
 - .NET 10 SDK.
 - Visual Studio 2026 ou editor compatível com .NET 10.
+- SQL Server com o banco `SisExaminouDB` provisionado pelas migrações `000` a `007`.
 
-O template MVC ainda executa sem conexão com banco porque os repositórios ADO.NET pertencem à Sprint 3. A ordem e os requisitos dos scripts estão documentados em `src/SisExaminou.Infrastructure/Persistence/SqlServer/Scripts/README.md`.
+A aplicação exige `ConnectionStrings:SisExaminou`. O arquivo de desenvolvimento aponta para `SisExaminouDB` na instância local `.\SQLEXPRESS`; ajuste-o ou use User Secrets/variável de ambiente no seu computador. A ordem das migrações e a carga manual do catálogo demonstrativo estão documentadas em `src/SisExaminou.Infrastructure/Persistence/SqlServer/Scripts/README.md`.
 
 ### Restaurar, compilar e testar
 
@@ -157,6 +165,13 @@ Na raiz do repositório:
 dotnet restore SisExaminou.sln
 dotnet build SisExaminou.sln -c Release --no-restore
 dotnet test tests/SisExaminou.Tests/SisExaminou.Tests.csproj -c Release --no-build
+```
+
+Os testes de integração com SQL Server são opcionais por padrão. Para executá-los contra um banco de desenvolvimento já migrado e com o catálogo demonstrativo:
+
+```powershell
+$env:SISEXAMINOU_TEST_CONNECTION_STRING = "Server=.\SQLEXPRESS;Database=SisExaminouDB;Integrated Security=True;Encrypt=True;TrustServerCertificate=True"
+dotnet test tests/SisExaminou.Tests/SisExaminou.Tests.csproj -c Release --filter FullyQualifiedName~Integration
 ```
 
 ### Executar a aplicação Web

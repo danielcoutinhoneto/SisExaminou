@@ -19,4 +19,60 @@ html {
 
 body {
   margin-bottom: 60px;
+  background-color: #f7f9fc;
+  color: #172033;
+}
+
+.navbar-brand {
+  font-weight: 700;
+}
+
+.hero-catalogo,
+.catalogo-cabecalho {
+  max-width: 960px;
+  margin-inline: auto;
+}
+
+.hero-catalogo {
+  background: linear-gradient(135deg, #eef5ff 0%, #ffffff 70%);
+  border: 1px solid #d9e6f7;
+}
+
+.hero-catalogo .lead {
+  max-width: 680px;
+}
+
+.resultado-exame {
+  border-color: #dfe6ef;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.resultado-exame:hover {
+  border-color: #86b7fe;
+  transform: translateY(-2px);
+}
+
+.conteudo-orientacao {
+  white-space: pre-line;
+}
+
+@media (max-width: 575.98px) {
+  .display-5,
+  .display-6 {
+    font-size: 2rem;
+  }
+
+  .card-body {
+    padding: 1rem;
+  }
+
+  .pagination {
+    font-size: 0.875rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .resultado-exame {
+    transition: none;
+  }
 }
