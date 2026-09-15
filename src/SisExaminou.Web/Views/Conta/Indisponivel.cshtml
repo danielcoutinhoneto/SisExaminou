@@ -1,0 +1,14 @@
+@model SisExaminou.Web.Models.Seguranca.LoginInputModel
+@{
+    ViewData["Title"] = "Autenticação indisponível";
+}
+
+<div class="text-center py-5" role="alert">
+    <h1 class="display-6">Não foi possível entrar agora</h1>
+    <p class="lead text-secondary">
+        A autenticação está temporariamente indisponível. Nenhuma informação de credencial foi exposta.
+    </p>
+    <a class="btn btn-primary"
+       asp-action="Entrar"
+       asp-route-returnUrl="@Model.ReturnUrl">Tentar novamente</a>
+</div>

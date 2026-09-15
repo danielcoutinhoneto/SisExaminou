@@ -96,7 +96,7 @@ A role permite leitura dos dois schemas, escrita nos cadastros administrados e e
 ## Segurança
 
 - Nenhum script contém usuário administrador, senha, hash real, token ou connection string.
-- O primeiro administrador será criado pelo bootstrap seguro da Sprint 4.
+- O primeiro administrador é criado pelo bootstrap seguro e explícito em `tools/SisExaminou.BootstrapAdmin`; consulte o README principal antes da execução.
 - A aplicação deve armazenar somente `SenhaHash`, gerado por `PasswordHasher`.
 - O executor de migrações e a conta da aplicação devem usar segredos externos ao repositório.
 
